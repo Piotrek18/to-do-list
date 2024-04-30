@@ -1,7 +1,7 @@
 import Task from "./task";
 import Project from "./project";
 
-function newTaskDialog(selectedProject) { //selected project do wyjebania jc
+function newTaskDialog(selectedProject, taskContainer) { //selected project do wyjebania jc
     
     if(!selectedProject) {
         alert("Please select a project first.");
@@ -58,7 +58,17 @@ function newTaskDialog(selectedProject) { //selected project do wyjebania jc
         const taskDiv = document.createElement("div");
         taskDiv.textContent = `Title: ${newTask.title}, Description: ${newTask.description}, Date: ${newTask.date}`;
 
-        const taskContainer = document.getElementById("taskContainer");
+        const deleteTaskBtn = document.createElement("button");
+        deleteTaskBtn.textContent = "Delete Task";
+        deleteTaskBtn.classList.add("deleteTaskBtn");
+        deleteTaskBtn.addEventListener("click", () => {
+            deleteTask(taskDiv, newTask, selectedProject);
+        });
+
+        const taskContainer = selectedProject.element;
+        console.log("Task Container:", taskContainer);
+        
+        taskDiv.appendChild(deleteTaskBtn);
         taskContainer.appendChild(taskDiv);
 
         closeDialog();
@@ -70,6 +80,15 @@ function newTaskDialog(selectedProject) { //selected project do wyjebania jc
 
     document.body.appendChild(taskDialog);
 
+}
+
+function deleteTask(taskDiv, task, project) {
+    taskDiv.remove();
+
+    const index = project.tasks.indexOf(task);
+    if (index !== -1) {
+        project.removeTask(index);
+    }
 }
 
 export {newTaskDialog};

@@ -22,7 +22,11 @@ function createProject(name) {
     projects.push(newProject);
     const projectDiv = document.createElement("div");
     projectDiv.textContent = name;
-    projectDiv.classList.add("project"); //chat
+    projectDiv.classList.add("project"); 
+
+    const taskContainer = document.createElement("div");
+    taskContainer.classList.add("taskContainer");
+    newProject.element = taskContainer;
 
     const deleteProjectBtn = document.createElement("button");
     deleteProjectBtn.textContent = "delete Project";
@@ -36,30 +40,23 @@ function createProject(name) {
     addTaskBtn.classList.add("addTaskBtn");
 
     addTaskBtn.addEventListener("click", () => {
-        newTaskDialog(newProject);
-    }); //chat
-
-    const deleteTaskBtn = document.createElement("button");
-    deleteTaskBtn.textContent = "delete task";
-    deleteTaskBtn.classList.add("deleteTaskBtn");
-    addTaskBtn.addEventListener("click", () => {
-        //remove task code ??
+        newTaskDialog(newProject, taskContainer);
     }); 
+
+    projectDiv.appendChild(taskContainer);
     projectDiv.appendChild(deleteProjectBtn);
     projectDiv.appendChild(addTaskBtn);
-    projectDiv.appendChild(deleteTaskBtn);
 
     document.getElementById("projectsContainer").appendChild(projectDiv);
 }
 
 function createProjectDialog() {
-    // Sprawdzamy, czy istnieje już okno dialogowe, jeśli tak, usuwamy je
+
     const existingDialog = document.getElementById("customDialog");
     if (existingDialog) {
         existingDialog.remove();
     }
 
-    // Tworzymy elementy HTML dla niestandardowego okna dialogowego
     const customDialog = document.createElement("div");
     customDialog.id = "customDialog";
 
