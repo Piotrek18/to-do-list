@@ -1,11 +1,30 @@
 import Task from "./task";
+import { saveProjectsToLocalStorage, } from "./storage";
 import Project from "./project";
 
-function newTaskDialog(selectedProject, taskContainer) { //selected project do wyjebania jc
-    
-    if(!selectedProject) {
+function renderTasks(project, taskContainer, projects) {
+    taskContainer.innerHTML = ""; 
+    project.tasks.forEach(task => {
+        const taskDiv = document.createElement("div");
+        taskDiv.textContent = `Title: ${task.title}, Description: ${task.description}, Date: ${task.date}`;
+
+        const deleteTaskBtn = document.createElement("button");
+        deleteTaskBtn.textContent = "Delete Task";
+        deleteTaskBtn.classList.add("deleteTaskBtn");
+        deleteTaskBtn.addEventListener("click", () => {
+            deleteTask(taskDiv, task, project,projects);
+        });
+
+        taskDiv.appendChild(deleteTaskBtn);
+        taskContainer.appendChild(taskDiv);
+    });
+
+}
+
+function newTaskDialog(project, taskContainer, projects) {
+    if (!project) {
         alert("Please select a project first.");
-        return
+        return null;
     }
     
     const taskDialog = document.createElement("div");
@@ -44,51 +63,53 @@ function newTaskDialog(selectedProject, taskContainer) { //selected project do w
     }
 
     submitBtn.onclick = function() {
-        const title = titleInputField.value;
-        const description = descInputField.value;
-        const date = dateInput.value;
+        //console.log("Project:", project); 
+        //console.log("Type of project:", typeof project); 
+        //console.log("Projects:", projects); 
+    
+        if (typeof project.addTaskToProject === 'function') {
+            console.log("addTaskToProject method found for project:", project);
+            const title = titleInputField.value;
+            const description = descInputField.value;
+            const date = dateInput.value;
+    
+            const newTask = new Task(title, description, date);
+            project.addTaskToProject(newTask);
 
-        const newTask = new Task(title, description, date);
-        selectedProject.addTaskToProject(newTask);
+            console.log("New Task Created: ", newTask);
+            console.log("New task added to project:", project);
+    
+            saveProjectsToLocalStorage(projects);
 
-        console.log("New Task Created: ", newTask);
-        console.log("new task added to project", selectedProject);
+            renderTasks(project, taskContainer, projects);
 
-
-        const taskDiv = document.createElement("div");
-        taskDiv.textContent = `Title: ${newTask.title}, Description: ${newTask.description}, Date: ${newTask.date}`;
-
-        const deleteTaskBtn = document.createElement("button");
-        deleteTaskBtn.textContent = "Delete Task";
-        deleteTaskBtn.classList.add("deleteTaskBtn");
-        deleteTaskBtn.addEventListener("click", () => {
-            deleteTask(taskDiv, newTask, selectedProject);
-        });
-
-        const taskContainer = selectedProject.element;
-        console.log("Task Container:", taskContainer);
-        
-        taskDiv.appendChild(deleteTaskBtn);
-        taskContainer.appendChild(taskDiv);
-
-        closeDialog();
+            closeDialog();
+    
+            return newTask;
+        } else {
+            console.log("addTaskToProject method not found for project:", project);
+            console.log("Project object:", project);
+        }
     }
+    
 
     cancelBtn.onclick = function() {
         closeDialog();
+        return null;
     }
 
     document.body.appendChild(taskDialog);
-
 }
 
-function deleteTask(taskDiv, task, project) {
+function deleteTask(taskDiv, task, project, projects) {
     taskDiv.remove();
 
     const index = project.tasks.indexOf(task);
     if (index !== -1) {
         project.removeTask(index);
     }
+
+    saveProjectsToLocalStorage(projects);
 }
 
-export {newTaskDialog};
+export { newTaskDialog, renderTasks, deleteTask };

@@ -6,10 +6,10 @@ add task display fc - done
 add project - task interaction - done
 add delete task fc - done
 add delete project fc - done
-add localStorage 
+add localStorage - done
 ...
 update html body
 Add semantic
 Add style.css
-delete useless parts
+delete useless parts - partially done
 

@@ -1,10 +1,64 @@
+import { saveProjectsToLocalStorage, loadProjectsFromLocalStorage, saveTasksToLocalStorage } from "./storage";
 import Project from "./project";
-import { newTaskDialog } from "./taskDialog";
+import { newTaskDialog, renderTasks, deleteTask } from "./taskDialog";
 import Task from "./task";
 
-let selectedProject = null;
+let projects = [];
 
-const projects = [];
+projects = loadProjectsFromLocalStorage();
+renderProjects();
+
+function renderProjects() {
+    const projectsContainer = document.getElementById("projectsContainer");
+    projectsContainer.innerHTML = ""; 
+
+    projects.forEach(project => {
+        const projectDiv = document.createElement("div");
+        projectDiv.textContent = project.title;
+        projectDiv.classList.add("project");
+
+        const taskContainer = document.createElement("div");
+        taskContainer.classList.add("taskContainer");
+        project.element = taskContainer;
+
+        const deleteProjectBtn = document.createElement("button");
+        deleteProjectBtn.textContent = "delete Project";
+        deleteProjectBtn.classList.add("deleteProjectBtn");
+        deleteProjectBtn.addEventListener('click', () => {
+            deleteProject(projectDiv, project);
+        });
+
+        const addTaskBtn = document.createElement("button");
+        addTaskBtn.textContent = "Add Task";
+        addTaskBtn.classList.add("addTaskBtn");
+
+        addTaskBtn.addEventListener("click", () => {
+            const newTask = newTaskDialog(project, taskContainer, projects);
+            if (newTask) {
+                project.addTaskToProject(newTask); 
+                renderTasks(project, taskContainer, projects); 
+            }
+        });
+
+        renderTasks(project, taskContainer, projects);
+
+        projectDiv.appendChild(taskContainer);
+        projectDiv.appendChild(deleteProjectBtn);
+        projectDiv.appendChild(addTaskBtn);
+
+        projectsContainer.appendChild(projectDiv);
+
+        
+    });
+}
+
+function createProject(name) {
+    const newProject = new Project(name);
+    projects.push(newProject);
+    renderProjects();
+
+    saveProjectsToLocalStorage(projects);
+}
 
 function deleteProject(projectDiv, project) {
     projectDiv.remove();
@@ -14,40 +68,10 @@ function deleteProject(projectDiv, project) {
         projects.splice(index, 1);
     }
 
-}
+    renderProjects();
 
+    saveProjectsToLocalStorage(projects);
 
-function createProject(name) {
-    const newProject = new Project(name);
-    projects.push(newProject);
-    const projectDiv = document.createElement("div");
-    projectDiv.textContent = name;
-    projectDiv.classList.add("project"); 
-
-    const taskContainer = document.createElement("div");
-    taskContainer.classList.add("taskContainer");
-    newProject.element = taskContainer;
-
-    const deleteProjectBtn = document.createElement("button");
-    deleteProjectBtn.textContent = "delete Project";
-    deleteProjectBtn.classList.add("deleteProjectBtn");
-    deleteProjectBtn.addEventListener('click', () => {
-        deleteProject(projectDiv, newProject);
-    })
-
-    const addTaskBtn = document.createElement("button");
-    addTaskBtn.textContent = "Add Task";
-    addTaskBtn.classList.add("addTaskBtn");
-
-    addTaskBtn.addEventListener("click", () => {
-        newTaskDialog(newProject, taskContainer);
-    }); 
-
-    projectDiv.appendChild(taskContainer);
-    projectDiv.appendChild(deleteProjectBtn);
-    projectDiv.appendChild(addTaskBtn);
-
-    document.getElementById("projectsContainer").appendChild(projectDiv);
 }
 
 function createProjectDialog() {
@@ -73,15 +97,12 @@ function createProjectDialog() {
     cancelBtn.textContent = "Cancel";
     cancelBtn.id = "cancelBtn";
 
-    // Dodajemy elementy do niestandardowego okna dialogowego
     customDialog.appendChild(inputField);
     customDialog.appendChild(submitBtn);
     customDialog.appendChild(cancelBtn);
 
-    // Dodajemy niestandardowe okno dialogowe do dokumentu
     document.body.appendChild(customDialog);
 
-    // Dodajemy obsługę kliknięcia przycisku submit
     submitBtn.onclick = function() {
         const projectNameInput = document.getElementById("projectName");
         const projectName = projectNameInput.value;
@@ -91,17 +112,12 @@ function createProjectDialog() {
             return;
         }
 
-        // Tworzymy nowy obiekt klasy Project
-        const newProject = new Project(projectName);
-
         createProject(projectName);
 
-        console.log("Utworzono nowy projekt:", newProject);
+        console.log("Utworzono nowy projekt:", projectName);
 
-        // Usuwamy okno dialogowe po zatwierdzeniu
         customDialog.remove();
 
-        // Czyszczymy pole tekstowe po zatwierdzeniu
         projectNameInput.value = "";
     };
 
@@ -115,3 +131,5 @@ document.getElementById("addProjectBtn").addEventListener("click", createProject
 document.getElementById("consoleCheckBtn").addEventListener('click', () => {
     console.log(projects);
 });
+
+renderProjects();
