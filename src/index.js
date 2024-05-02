@@ -1,8 +1,8 @@
-import { saveProjectsToLocalStorage, loadProjectsFromLocalStorage, saveTasksToLocalStorage } from "./storage";
+import { saveProjectsToLocalStorage, loadProjectsFromLocalStorage } from "./storage";
 import Project from "./project";
-import { newTaskDialog, renderTasks, deleteTask } from "./taskDialog";
+import { newTaskDialog, renderTasks } from "./newTask";
 import './style.css';
-import Task from "./task";
+//import Task from "./task";
 
 let projects = [];
 
@@ -128,9 +128,3 @@ function createProjectDialog() {
 }
 
 document.getElementById("addProjectBtn").addEventListener("click", createProjectDialog);
-
-/*document.getElementById("consoleCheckBtn").addEventListener('click', () => {
-    console.log(projects);
-});*/
-
-renderProjects();

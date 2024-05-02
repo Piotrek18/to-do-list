@@ -10,6 +10,6 @@ add localStorage - done
 ...
 update html body - done
 Add semantic - done
-Add style.css 
+Add style.css - done
 delete useless parts - partially done
 
