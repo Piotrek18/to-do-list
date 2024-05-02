@@ -8,8 +8,8 @@ add delete task fc - done
 add delete project fc - done
 add localStorage - done
 ...
-update html body
-Add semantic
-Add style.css
+update html body - done
+Add semantic - done
+Add style.css 
 delete useless parts - partially done
 

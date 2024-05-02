@@ -1,6 +1,7 @@
 import { saveProjectsToLocalStorage, loadProjectsFromLocalStorage, saveTasksToLocalStorage } from "./storage";
 import Project from "./project";
 import { newTaskDialog, renderTasks, deleteTask } from "./taskDialog";
+import './style.css';
 import Task from "./task";
 
 let projects = [];
@@ -43,8 +44,8 @@ function renderProjects() {
         renderTasks(project, taskContainer, projects);
 
         projectDiv.appendChild(taskContainer);
-        projectDiv.appendChild(deleteProjectBtn);
         projectDiv.appendChild(addTaskBtn);
+        projectDiv.appendChild(deleteProjectBtn);
 
         projectsContainer.appendChild(projectDiv);
 
@@ -128,8 +129,8 @@ function createProjectDialog() {
 
 document.getElementById("addProjectBtn").addEventListener("click", createProjectDialog);
 
-document.getElementById("consoleCheckBtn").addEventListener('click', () => {
+/*document.getElementById("consoleCheckBtn").addEventListener('click', () => {
     console.log(projects);
-});
+});*/
 
 renderProjects();

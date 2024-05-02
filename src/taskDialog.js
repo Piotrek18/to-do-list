@@ -2,7 +2,7 @@ import Task from "./task";
 import { saveProjectsToLocalStorage, } from "./storage";
 import Project from "./project";
 
-function renderTasks(project, taskContainer, projects) {
+/*function renderTasks(project, taskContainer, projects) {
     taskContainer.innerHTML = ""; 
     project.tasks.forEach(task => {
         const taskDiv = document.createElement("div");
@@ -19,7 +19,38 @@ function renderTasks(project, taskContainer, projects) {
         taskContainer.appendChild(taskDiv);
     });
 
+}*/
+
+function renderTasks(project, taskContainer, projects) {
+    taskContainer.innerHTML = ""; 
+    project.tasks.forEach(task => {
+        const taskDiv = document.createElement("div");
+        taskDiv.classList.add("taskItem"); // Dodajemy klasę taskItem
+
+        const taskTitle = document.createElement("p");
+        taskTitle.textContent = `Title: ${task.title}`;
+
+        const taskDescription = document.createElement("p");
+        taskDescription.textContent = `Description: ${task.description}`;
+
+        const taskDate = document.createElement("p");
+        taskDate.textContent = `Date: ${task.date}`;
+
+        const deleteTaskBtn = document.createElement("button");
+        deleteTaskBtn.textContent = "Delete Task";
+        deleteTaskBtn.classList.add("deleteTaskBtn");
+        deleteTaskBtn.addEventListener("click", () => {
+            deleteTask(taskDiv, task, project, projects);
+        });
+
+        taskDiv.appendChild(taskTitle);
+        taskDiv.appendChild(taskDescription);
+        taskDiv.appendChild(taskDate);
+        taskDiv.appendChild(deleteTaskBtn);
+        taskContainer.appendChild(taskDiv);
+    });
 }
+
 
 function newTaskDialog(project, taskContainer, projects) {
     if (!project) {
@@ -35,8 +66,7 @@ function newTaskDialog(project, taskContainer, projects) {
     titleInputField.id = "taskTitle";
     titleInputField.placeholder = "enter task title";
 
-    const descInputField = document.createElement("input");
-    descInputField.type = "text";
+    const descInputField = document.createElement("textarea");
     descInputField.id = "taskDescription";
     descInputField.placeholder = "description";
 
@@ -62,11 +92,7 @@ function newTaskDialog(project, taskContainer, projects) {
         taskDialog.remove();
     }
 
-    submitBtn.onclick = function() {
-        //console.log("Project:", project); 
-        //console.log("Type of project:", typeof project); 
-        //console.log("Projects:", projects); 
-    
+    submitBtn.onclick = function() {   
         if (typeof project.addTaskToProject === 'function') {
             console.log("addTaskToProject method found for project:", project);
             const title = titleInputField.value;
